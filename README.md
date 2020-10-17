@@ -11,7 +11,7 @@ g++ -IOpenGL\include -LOpenGL\dll BallDemo.cpp -o BallDemo.exe -lfreeglut -lOPEN
 
 Command line running:
 ---------------------
-Make sure glut32.dll is present in the same folder
+Make sure freeglut32.dll or freeglut64.dll, depending on your compile target, is present in the same folder
 Run BallDemo.exe
 
 Animation Related API:

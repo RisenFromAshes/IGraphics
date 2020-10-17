@@ -404,9 +404,9 @@ void iInitialize(int width=500, int height=500, const char *title="iGraphics")
 {
     iScreenHeight = height;
     iScreenWidth = width;
-    int n;
-    char* p;
-    glutInit(&n, &p);
+    int n = 1;
+    char *p[1];
+    glutInit(&n, p);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_ALPHA | GLUT_MULTISAMPLE) ;
     glutInitWindowSize(width , height ) ;
     glutInitWindowPosition( 10 , 10 ) ;

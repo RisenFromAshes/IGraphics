@@ -3,7 +3,6 @@
 	Last modified: July 17, 2019
 */
 # include "iGraphics.h"
-# include "gl.h"
 
 #define DEL_SCREEN_X 5
 #define DEL_SCREEN_Y 5
@@ -17,6 +16,7 @@ int g_sunX, g_sunY, g_sunR;
 int g_fDrawPlanetOrbit = 1;
 int g_fDrawSatelliteOrbit = 1;
 double g_scaleFactor = 1;
+
 
 typedef struct _Planet {
     int majorAxisLen;
