@@ -53,12 +53,10 @@
 			<Add option="-fexceptions" />
 			<Add directory="OpenGL/include" />
 		</Compiler>
-		<Linker>
-		</Linker>
 		<ExtraCommands>
 			<Add after="xcopy /y OpenGL\DLL\libfreeglut.dll $TARGET_OUTPUT_DIR" />
 		</ExtraCommands>
-		<Unit filename="SolarSystem.cpp" />
+		<Unit filename="BallDemo.cpp" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>
