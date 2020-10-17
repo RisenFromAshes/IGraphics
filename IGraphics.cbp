@@ -23,7 +23,7 @@
 					<Add directory="OpenGL/dll" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="xcopy /y openGL\dll\freeglut.dll $TARGET_OUTPUT_DIR" />
+					<Add after="xcopy /y openGL\dll\libfreeglut.dll $TARGET_OUTPUT_DIR" />
 				</ExtraCommands>
 			</Target>
 			<Target title="Release">
@@ -44,7 +44,7 @@
 					<Add directory="OpenGL/dll" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="xcopy /y openGL\dll\freeglut.dll $TARGET_OUTPUT_DIR" />
+					<Add after="xcopy /y openGL\dll\libfreeglut.dll $TARGET_OUTPUT_DIR" />
 				</ExtraCommands>
 			</Target>
 		</Build>
@@ -56,7 +56,7 @@
 		<Linker>
 		</Linker>
 		<ExtraCommands>
-			<Add after="xcopy /y OpenGL\DLL\freeglut.dll $TARGET_OUTPUT_DIR" />
+			<Add after="xcopy /y OpenGL\DLL\libfreeglut.dll $TARGET_OUTPUT_DIR" />
 		</ExtraCommands>
 		<Unit filename="SolarSystem.cpp" />
 		<Extensions>
