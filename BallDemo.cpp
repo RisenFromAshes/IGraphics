@@ -3,7 +3,6 @@
 	last modified: August 8, 2008
 */
 # include "iGraphics.h"
-# include "gl.h"
 
 int ball_x, ball_y;
 int dx, dy;

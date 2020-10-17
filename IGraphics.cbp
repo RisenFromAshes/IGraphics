@@ -16,16 +16,13 @@
 					<Add directory="OpenGL/include" />
 				</Compiler>
 				<Linker>
-					<Add library="Glaux" />
-					<Add library="GLU32" />
-					<Add library="glui32" />
-					<Add library="glut32" />
+					<Add library="freeglut" />
 					<Add library="OPENGL32" />
 					<Add library="gdi32" />
 					<Add directory="./OpenGL/lib" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="xcopy /y openGL\dll\glut32.dll $TARGET_OUTPUT_DIR" />
+					<Add after="xcopy /y openGL\dll\freeglut32.dll $TARGET_OUTPUT_DIR" />
 				</ExtraCommands>
 			</Target>
 			<Target title="Release">
@@ -47,14 +44,11 @@
 			<Add directory="OpenGL/include" />
 		</Compiler>
 		<Linker>
-			<Add library="OpenGL/lib/Glaux.lib" />
-			<Add library="OpenGL/lib/GLU32.LIB" />
-			<Add library="OpenGL/lib/glui32.lib" />
-			<Add library="OpenGL/lib/glut32.lib" />
+			<Add library="OpenGL/lib/libfreeglut_static32.lib" />
 			<Add library="OpenGL/lib/OPENGL32.LIB" />
 		</Linker>
 		<ExtraCommands>
-			<Add after="xcopy /y OpenGL\DLL\glut32.dll $TARGET_OUTPUT_DIR" />
+			<Add after="xcopy /y OpenGL\DLL\freeglut32.dll $TARGET_OUTPUT_DIR" />
 		</ExtraCommands>
 		<Unit filename="SolarSystem.cpp" />
 		<Extensions>

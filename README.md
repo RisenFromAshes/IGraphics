@@ -7,7 +7,7 @@ g++ -IOpenGL\include -w -c BallDemo.cpp -o BallDemo.o
 
 Command line linking:
 ---------------------
-g++ -LOpenGL\lib BallDemo.o -o BallDemo.exe -lGlaux -lGLU32 -lglui32 -lglut32 -lOPENGL32 -lgdi32
+g++ -IOpenGL\include -LOpenGL\dll BallDemo.c -o BallDemo.exe -lfreeglut -lOPENGL32 -lgdi32
 
 Command line running:
 ---------------------

@@ -7,16 +7,13 @@
 //  Version: 2.0.2012.2015
 //
 
-#pragma comment(lib, "glut32.lib")
-#pragma comment(lib, "glaux.lib")
-
-# include <stdio.h>
-# include <stdlib.h>
-#include <windows.h>
-#include "glut.h"
+#include "OpenGL/include/glut.h"
+#include <stdio.h>
+#include <stdlib.h>
 #include <time.h>
 #include <math.h>
-#include "glaux.h"
+#define STB_IMAGE_IMPLEMENTATION
+#include "OpenGL/include/stb_image.h"
 
 int iScreenHeight, iScreenWidth;
 int iMouseX, iMouseY;
@@ -32,16 +29,16 @@ void iSpecialKeyboard(unsigned char);
 void iMouseMove(int, int);
 void iMouse(int button, int state, int x, int y);
 
-static void  __stdcall iA0(HWND,unsigned int, unsigned int, unsigned long){if(!iAnimPause[0])iAnimFunction[0]();}
-static void  __stdcall iA1(HWND,unsigned int, unsigned int, unsigned long){if(!iAnimPause[1])iAnimFunction[1]();}
-static void  __stdcall iA2(HWND,unsigned int, unsigned int, unsigned long){if(!iAnimPause[2])iAnimFunction[2]();}
-static void  __stdcall iA3(HWND,unsigned int, unsigned int, unsigned long){if(!iAnimPause[3])iAnimFunction[3]();}
-static void  __stdcall iA4(HWND,unsigned int, unsigned int, unsigned long){if(!iAnimPause[4])iAnimFunction[4]();}
-static void  __stdcall iA5(HWND,unsigned int, unsigned int, unsigned long){if(!iAnimPause[5])iAnimFunction[5]();}
-static void  __stdcall iA6(HWND,unsigned int, unsigned int, unsigned long){if(!iAnimPause[6])iAnimFunction[6]();}
-static void  __stdcall iA7(HWND,unsigned int, unsigned int, unsigned long){if(!iAnimPause[7])iAnimFunction[7]();}
-static void  __stdcall iA8(HWND,unsigned int, unsigned int, unsigned long){if(!iAnimPause[8])iAnimFunction[8]();}
-static void  __stdcall iA9(HWND,unsigned int, unsigned int, unsigned long){if(!iAnimPause[9])iAnimFunction[9]();}
+static void  __stdcall iA0(HWND,unsigned int, unsigned long long , unsigned long){if(!iAnimPause[0])iAnimFunction[0]();}
+static void  __stdcall iA1(HWND,unsigned int, unsigned long long , unsigned long){if(!iAnimPause[1])iAnimFunction[1]();}
+static void  __stdcall iA2(HWND,unsigned int, unsigned long long , unsigned long){if(!iAnimPause[2])iAnimFunction[2]();}
+static void  __stdcall iA3(HWND,unsigned int, unsigned long long , unsigned long){if(!iAnimPause[3])iAnimFunction[3]();}
+static void  __stdcall iA4(HWND,unsigned int, unsigned long long , unsigned long){if(!iAnimPause[4])iAnimFunction[4]();}
+static void  __stdcall iA5(HWND,unsigned int, unsigned long long , unsigned long){if(!iAnimPause[5])iAnimFunction[5]();}
+static void  __stdcall iA6(HWND,unsigned int, unsigned long long , unsigned long){if(!iAnimPause[6])iAnimFunction[6]();}
+static void  __stdcall iA7(HWND,unsigned int, unsigned long long , unsigned long){if(!iAnimPause[7])iAnimFunction[7]();}
+static void  __stdcall iA8(HWND,unsigned int, unsigned long long , unsigned long){if(!iAnimPause[8])iAnimFunction[8]();}
+static void  __stdcall iA9(HWND,unsigned int, unsigned long long , unsigned long){if(!iAnimPause[9])iAnimFunction[9]();}
 
 int iSetTimer(int msec, void (*f)(void))
 {
@@ -97,38 +94,18 @@ void iResumeTimer(int index){
 //
 //                To disable this feature, put -1 in this parameter
 //
-void iShowBMP2(int x, int y, char filename[], int ignoreColor)
+void iShowBMP2(int x, int y, const char* filename, int ignoreColor)
 {
-    AUX_RGBImageRec *TextureImage;
-    TextureImage = auxDIBImageLoad(filename);
-
-    int i,j,k;
-    int width = TextureImage->sizeX;
-    int height = TextureImage->sizeY;
-    int nPixels = width * height;
-    int *rgPixels = new int[nPixels];
-
-    for (i = 0, j=0; i < nPixels; i++, j += 3)
-    {
-        int rgb = 0;
-        for(int k = 2; k >= 0; k--)
-        {
-            rgb = ((rgb << 8) | TextureImage->data[j+k]);
-        }
-
-        rgPixels[i] = (rgb == ignoreColor) ? 0 : 255;
-        rgPixels[i] = ((rgPixels[i] << 24) | rgb);
-    }
+    int width, height, n;
+    unsigned char* image = stbi_load(filename, &width, &height, &n, 4);
 
     glRasterPos2f(x, y);
-    glDrawPixels(width, height, GL_RGBA, GL_UNSIGNED_BYTE, rgPixels);
+    glDrawPixels(width, height, GL_RGBA, GL_UNSIGNED_BYTE, image);
 
-    delete []rgPixels;
-    free(TextureImage->data);
-    free(TextureImage);
+    stbi_image_free(image);
 }
 
-void iShowBMP(int x, int y, char filename[])
+void iShowBMP(int x, int y, const char* filename)
 {
     iShowBMP2(x, y, filename, -1 /* ignoreColor */);
 }
@@ -146,7 +123,7 @@ void iGetPixelColor (int cursorX, int cursorY, int rgb[])
     //printf("%d %d %d\n",pixel[0],pixel[1],pixel[2]);
 }
 
-void iText(double x, double y, char *str, void* font=GLUT_BITMAP_8_BY_13)
+void iText(double x, double y, const char *str, void* font=GLUT_BITMAP_8_BY_13)
 {
     glRasterPos3d(x, y, 0);
     int i;
@@ -423,12 +400,14 @@ void mouseHandlerFF(int button, int state, int x, int y)
     glFlush();
 }
 
-void iInitialize(int width=500, int height=500, char *title="iGraphics")
+void iInitialize(int width=500, int height=500, const char *title="iGraphics")
 {
     iScreenHeight = height;
     iScreenWidth = width;
-
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_ALPHA) ;
+    int n;
+    char* p;
+    glutInit(&n, &p);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_ALPHA | GLUT_MULTISAMPLE) ;
     glutInitWindowSize(width , height ) ;
     glutInitWindowPosition( 10 , 10 ) ;
     glutCreateWindow(title) ;

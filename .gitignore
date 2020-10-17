@@ -1,5 +1,8 @@
+.vscode
 StudentCodes
 bin
 obj
+*.o
+*.exe
 *.depend
 *.layout
