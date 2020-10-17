@@ -1,6 +1,5 @@
-.vscode
 StudentCodes
-bin
+bin/**
 obj
 *.o
 *.exe

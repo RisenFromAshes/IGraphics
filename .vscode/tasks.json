@@ -1,0 +1,34 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "shell",
+			"command": "g++",
+			"args": [
+				"-IOpenGL/include",
+				"-LOpenGL/dll",
+				"\"${file}\"",
+				"-o",
+				"\"${workspaceFolder}/bin/${fileBasenameNoExtension}.exe\"",
+				"-lfreeglut","-lOPENGL32","-lgdi32",
+				"&&",
+				"cp",
+				"\"${workspaceFolder}/OpenGL/dll/libfreeglut.dll\"",
+				"\"${workspaceFolder}/bin/\"",
+				"&&",
+				"\"${workspaceFolder}/bin/${fileBasenameNoExtension}.exe\""
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": [
+				"$gcc"
+			],
+			"label": "C++: iGraphics",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
+		}
+	]
+}
