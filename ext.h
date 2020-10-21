@@ -1,0 +1,137 @@
+#include "iGraphics.h"
+#include <chrono>
+
+#define PI acos(-1)
+#define ERR 1e-8
+
+#define min(x, y) (x < y) ? (x) : (y)
+#define max(x, y) (x > y) ? (x) : (y)
+
+struct point {
+    double x, y;
+};
+
+static int transparent = 0;
+
+void iSetColorEx(double r, double g, double b, double a)
+{
+    double mmx = 255;
+    if (r > mmx) r = mmx;
+    if (g > mmx) g = mmx;
+    if (b > mmx) b = mmx;
+    r /= mmx;
+    g /= mmx;
+    b /= mmx;
+    glColor4f(r, g, b, a);
+}
+
+static point solve_sim_eqn(double a1, double b1, double c1, double a2, double b2, double c2)
+{
+    double       d = a1 * b2 - a2 * b1;
+    struct point p;
+    p.x = (b1 * c2 - b2 * c1) / d;
+    p.y = (c1 * a2 - c2 * a1) / d;
+    return p;
+}
+
+void iPath(double X[], double Y[], int n, double d = 1)
+{
+    double pX[4], pY[4];
+    double dy, dx, a1, b1, c1, a2, b2, c2, M1, M2;
+    int    s1, s2;
+    point  p1, p2;
+    for (int i = 0; i < n; i++) {
+        if (i == n - 1) {
+            s2 = s2;
+            a2 = a1, b2 = b1, c2 = c1;
+        }
+        else {
+            dy = Y[i + 1] - Y[i];
+            dx = X[i + 1] - X[i];
+            if (i == 0)
+                s2 = 1;
+            else {
+                s2 = (X[i] > X[i - 1] && X[i + 1] > X[i]) || (X[i] < X[i - 1] && X[i + 1] < X[i]);
+                s2 = s1 * (2 * s2 - 1);
+            }
+            if (dx > 0)
+                a2 = -dy, b2 = dx;
+            else
+                a2 = dy, b2 = -dx;
+            c2 = -(a2 * X[i] + b2 * Y[i]);
+            M2 = sqrt(a2 * a2 + b2 * b2);
+        }
+        if (i == 0 || i == n - 1 || fabs(a1 * b2 - a2 * b1) < ERR) {
+            a1 = b2, b1 = -a2, c1 = -(a1 * X[i] + b1 * Y[i]);
+            p1 = solve_sim_eqn(a1, b1, c1, a2, b2, c2 + s2 * d * M2 / 2),
+            p2 = solve_sim_eqn(a1, b1, c1, a2, b2, c2 - s2 * d * M2 / 2);
+        }
+        else {
+            p1 = solve_sim_eqn(a1, b1, c1 + s1 * d * M1 / 2, a2, b2, c2 + s2 * d * M2 / 2),
+            p2 = solve_sim_eqn(a1, b1, c1 - s1 * d * M1 / 2, a2, b2, c2 - s2 * d * M2 / 2);
+        }
+        pX[2] = p1.x, pY[2] = p1.y;
+        pX[3] = p2.x, pY[3] = p2.y;
+        if (i != 0) iFilledPolygon(pX, pY, 4);
+        a1 = a2, b1 = b2, c1 = c2, M1 = M2, s1 = s2;
+        pX[1] = pX[2], pY[1] = pY[2];
+        pX[0] = pX[3], pY[0] = pY[3];
+    }
+}
+
+void iSetTransparency(int state) { transparent = (state == 0) ? 0 : 1; }
+
+double iGetTime()
+{
+#if __cplusplus >= 199711L
+    static auto start = std::chrono::high_resolution_clock::now();
+    return (std::chrono::high_resolution_clock::now() - start).count() / 1e9;
+#else
+    static clock_t start = clock();
+    return (clock() - start) / double(CLOCKS_PER_SEC);
+#endif
+}
+
+void iInitializeEx(int width = 500, int height = 500, const char* title = "iGraphics")
+{
+    iScreenHeight = height;
+    iScreenWidth  = width;
+    int   n       = 1;
+    char* p[1];
+    glutInit(&n, p);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_ALPHA | GLUT_MULTISAMPLE);
+    glutInitWindowSize(width, height);
+    glutInitWindowPosition(10, 10);
+    glutCreateWindow(title);
+    glClearColor(0.0, 0.0, 0.0, 0.0);
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(0.0, width, 0.0, height, -1.0, 1.0);
+    // glOrtho(-100.0 , 100.0 , -100.0 , 100.0 , -1.0 , 1.0) ;
+    // SetTimer(0, 0, 10, timer_proc);
+
+    iClear();
+
+    glutDisplayFunc(displayFF);
+    glutKeyboardFunc(keyboardHandler1FF); // normal
+    glutSpecialFunc(keyboardHandler2FF);  // special keys
+    glutMouseFunc(mouseHandlerFF);
+    glutMotionFunc(mouseMoveHandlerFF);
+    glutIdleFunc(animFF);
+
+    //
+    // Setup Alpha channel testing.
+    // If alpha value is greater than 0, then those
+    // pixels will be rendered. Otherwise, they would not be rendered
+    //
+    glAlphaFunc(GL_GREATER, 0.0f);
+    glEnable(GL_ALPHA_TEST);
+
+    if (transparent) {
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
+
+    glutMainLoop();
+}

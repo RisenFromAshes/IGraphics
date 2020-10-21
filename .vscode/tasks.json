@@ -10,6 +10,7 @@
 				"\"${file}\"",
 				"-o",
 				"\"${workspaceFolder}/bin/${fileBasenameNoExtension}.exe\"",
+				// "-O3",
 				"-lfreeglut","-lOPENGL32","-lgdi32",
 				"&&",
 				"cp",
