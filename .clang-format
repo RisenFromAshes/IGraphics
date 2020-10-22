@@ -8,7 +8,7 @@ AllowShortIfStatementsOnASingleLine: true
 AllowShortCaseLabelsOnASingleLine: true
 AllowShortBlocksOnASingleLine : true
 IndentCaseLabels: true
-ColumnLimit: 100
+ColumnLimit: 120
 AccessModifierOffset: -2
 BinPackParameters: false
 BinPackArguments: false

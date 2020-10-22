@@ -139,10 +139,7 @@ void iShowBMP2(int x, int y, const char* filename, int ignoreColor)
     stbi_image_free(image);
 }
 
-void iShowBMP(int x, int y, const char* filename)
-{
-    iShowBMP2(x, y, filename, -1 /* ignoreColor */);
-}
+void iShowBMP(int x, int y, const char* filename) { iShowBMP2(x, y, filename, -1 /* ignoreColor */); }
 
 void iGetPixelColor(int cursorX, int cursorY, int rgb[])
 {

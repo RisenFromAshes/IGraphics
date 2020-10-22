@@ -1,7 +1,7 @@
 #include "iGraphics.h"
 #include <chrono>
 
-#define PI acos(-1)
+#define PI 3.1415926535897932
 #define ERR 1e-8
 
 #define min(x, y) (x < y) ? (x) : (y)
@@ -33,7 +33,10 @@ static point solve_sim_eqn(double a1, double b1, double c1, double a2, double b2
     p.y = (c1 * a2 - c2 * a1) / d;
     return p;
 }
-
+int isLeft(double x1, double y1, double x2, double y2, double x3, double y3)
+{
+    return ((x2 - x1) * (y3 - y1) - (x3 - x1) * (y2 - y1)) > 0 ? 1 : 0;
+}
 void iPath(double X[], double Y[], int n, double d = 1)
 {
     double pX[4], pY[4];
@@ -83,17 +86,54 @@ void iSetTransparency(int state) { transparent = (state == 0) ? 0 : 1; }
 
 double iGetTime()
 {
-#if __cplusplus >= 199711L
-    static auto start = std::chrono::high_resolution_clock::now();
-    return (std::chrono::high_resolution_clock::now() - start).count() / 1e9;
-#else
+    // #if __cplusplus >= 199711L
+    //     static auto start = std::chrono::high_resolution_clock::now();
+    //     return (std::chrono::high_resolution_clock::now() - start).count() / 1e9;
+    // #else
     static clock_t start = clock();
     return (clock() - start) / double(CLOCKS_PER_SEC);
-#endif
+    // #endif
+}
+
+double iRandom(double min, double max)
+{
+    static int f = 1;
+    if (f) {
+        srand((unsigned int)time(NULL));
+        f = 0;
+    }
+    int s = 1 << 15;
+    return min + (max - min) / s * (rand() % s);
+}
+
+void iRandomColor(double S, double V, double rgb[])
+{
+    // convert to rgb from random hue HSV
+    int    d = 1 << 15;
+    double H = iRandom(0, 360);
+    double C = S * V;
+    double X = C * (1 - abs(fmod(H / 60.0, 2) - 1));
+    double m = V - C;
+    double r, g, b;
+    if (H >= 0 && H < 60) { r = C, g = X, b = 0; }
+    else if (H >= 60 && H < 120)
+        r = X, g = C, b = 0;
+    else if (H >= 120 && H < 180)
+        r = 0, g = C, b = X;
+    else if (H >= 180 && H < 240)
+        r = 0, g = X, b = C;
+    else if (H >= 240 && H < 300)
+        r = X, g = 0, b = C;
+    else
+        r = C, g = 0, b = X;
+    rgb[0] = (r + m) * 255;
+    rgb[1] = (g + m) * 255;
+    rgb[2] = (b + m) * 255;
 }
 
 void iInitializeEx(int width = 500, int height = 500, const char* title = "iGraphics")
 {
+
     iScreenHeight = height;
     iScreenWidth  = width;
     int   n       = 1;
