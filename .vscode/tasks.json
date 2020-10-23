@@ -10,7 +10,6 @@
                 "\"${file}\"",
                 "-o",
                 "\"${workspaceFolder}/bin/${fileBasenameNoExtension}.exe\"",
-                // "-mwindows", "-O3",
                 "-static-libgcc",
                 "-static-libstdc++",
                 "-lfreeglut",
@@ -33,11 +32,46 @@
             "problemMatcher": [
                 "$gcc"
             ],
-            "label": "C++: iGraphics",
+            "label": "C++: iGraphics Build",
             "group": {
                 "kind": "build",
                 "isDefault": true
             }
+        },
+        {
+            "type": "shell",
+            "command": "g++",
+            "args": [
+                "-IOpenGL/include",
+                "-LOpenGL/dll",
+                "\"${file}\"",
+                "-o",
+                "\"${workspaceFolder}/bin/${fileBasenameNoExtension}.exe\"",
+                "-mwindows",
+                "-O3",
+                "-static-libgcc",
+                "-static-libstdc++",
+                "-lfreeglut",
+                "-lOPENGL32",
+                "-lgdi32",
+                "&&",
+                "cp",
+                "\"${workspaceFolder}/OpenGL/dll/libfreeglut.dll\"",
+                "\"${workspaceFolder}/bin/\"",
+                "&&",
+                "cp",
+                "\"${workspaceFolder}/OpenGL/dll/libwinpthread-1.dll\"",
+                "\"${workspaceFolder}/bin/\"",
+                "&&",
+                "\"${workspaceFolder}/bin/${fileBasenameNoExtension}.exe\""
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "label": "C++: iGraphics Release"
         }
     ]
 }
