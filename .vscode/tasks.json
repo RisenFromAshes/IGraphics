@@ -34,7 +34,7 @@
             ],
             "label": "C++: iGraphics Build",
             "group": {
-                "kind": "build",
+                "kind": "test",
                 "isDefault": true
             }
         },
@@ -63,7 +63,12 @@
                 "\"${workspaceFolder}/OpenGL/dll/libwinpthread-1.dll\"",
                 "\"${workspaceFolder}/bin/\"",
                 "&&",
-                "\"${workspaceFolder}/bin/${fileBasenameNoExtension}.exe\""
+                "cd", "bin",
+                "&&",
+                "7z", "a", "-tzip", 
+                "${fileBasenameNoExtension}.zip", "${fileBasenameNoExtension}.exe","libfreeglut.dll", "libwinpthread-1.dll",
+                "&&",
+                "mv", "${fileBasenameNoExtension}.zip", "../release/"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
@@ -71,7 +76,11 @@
             "problemMatcher": [
                 "$gcc"
             ],
-            "label": "C++: iGraphics Release"
+            "label": "C++: iGraphics Release",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
         }
     ]
 }
