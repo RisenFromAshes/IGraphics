@@ -10,7 +10,7 @@
                 "\"${file}\"",
                 "-o",
                 "\"${workspaceFolder}/bin/${fileBasenameNoExtension}.exe\"",
-                "-mwindows", "-O3",
+                // "-mwindows", "-O3",
                 "-static-libgcc",
                 "-static-libstdc++",
                 "-lfreeglut",

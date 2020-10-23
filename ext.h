@@ -86,13 +86,8 @@ void iSetTransparency(int state) { transparent = (state == 0) ? 0 : 1; }
 
 double iGetTime()
 {
-    // #if __cplusplus >= 199711L
-    //     static auto start = std::chrono::high_resolution_clock::now();
-    //     return (std::chrono::high_resolution_clock::now() - start).count() / 1e9;
-    // #else
     static clock_t start = clock();
     return (clock() - start) / double(CLOCKS_PER_SEC);
-    // #endif
 }
 
 double iRandom(double min, double max)
