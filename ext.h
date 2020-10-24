@@ -1,11 +1,15 @@
 #include "iGraphics.h"
 #include <chrono>
 
-#define PI  3.1415926535897932
+#ifndef PI
+#define PI 3.1415926535897932
+#endif
+#ifndef ERR
 #define ERR 1e-8
+#endif
 
-#define min(x, y) (x < y) ? (x) : (y)
-#define max(x, y) (x > y) ? (x) : (y)
+#define min(x, y) ((x < y) ? (x) : (y))
+#define max(x, y) ((x > y) ? (x) : (y))
 
 struct point {
     double x, y;
