@@ -1,7 +1,7 @@
 #include "iGraphics.h"
 #include <chrono>
 
-#define PI 3.1415926535897932
+#define PI  3.1415926535897932
 #define ERR 1e-8
 
 #define min(x, y) (x < y) ? (x) : (y)
@@ -126,6 +126,8 @@ void iRandomColor(double S, double V, double rgb[])
     rgb[2] = (b + m) * 255;
 }
 
+void iResize(int width, int height);
+
 void iInitializeEx(int width = 500, int height = 500, const char* title = "iGraphics")
 {
 
@@ -149,6 +151,7 @@ void iInitializeEx(int width = 500, int height = 500, const char* title = "iGrap
     iClear();
 
     glutDisplayFunc(displayFF);
+    glutReshapeFunc(iResize);
     glutKeyboardFunc(keyboardHandler1FF); // normal
     glutSpecialFunc(keyboardHandler2FF);  // special keys
     glutMouseFunc(mouseHandlerFF);

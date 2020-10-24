@@ -12,6 +12,7 @@ ColumnLimit: 120
 AccessModifierOffset: -2
 BinPackParameters: false
 BinPackArguments: false
+AlignConsecutiveMacros: true
 AlignConsecutiveDeclarations: true
 AlignAfterOpenBracket: true
 AlignConsecutiveAssignments: true
