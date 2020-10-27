@@ -41,49 +41,64 @@ int isLeft(double x1, double y1, double x2, double y2, double x3, double y3)
 {
     return ((x2 - x1) * (y3 - y1) - (x3 - x1) * (y2 - y1)) > 0 ? 1 : 0;
 }
-void iPath(double X[], double Y[], int n, double d = 1)
+void iPath(double X[], double Y[], int n, double d = 1, int closed = 0)
 {
     double pX[4], pY[4];
     double dy, dx, a1, b1, c1, a2, b2, c2, M1, M2;
     int    s1, s2;
     point  p1, p2;
-    for (int i = 0; i < n; i++) {
-        if (i == n - 1) {
+    // repeating first two points like points in the middle for closed
+    for (int i = 0; i < n + 2 * closed; i++) {
+        if (i == n - 1 && !closed) {
             s2 = s2;
             a2 = a1, b2 = b1, c2 = c1;
         }
         else {
-            dy = Y[i + 1] - Y[i];
-            dx = X[i + 1] - X[i];
+            dy = Y[(i + 1) % n] - Y[i % n];
+            dx = X[(i + 1) % n] - X[i % n];
             if (i == 0)
                 s2 = 1;
             else {
-                s2 = (X[i] > X[i - 1] && X[i + 1] > X[i]) || (X[i] < X[i - 1] && X[i + 1] < X[i]);
+                // only combination of inequalities that gives the right signs :3
+                s2 = (X[i % n] > X[(i - 1) % n] && X[(i + 1) % n] > X[i % n]) ||
+                     (X[i % n] <= X[(i - 1) % n] && X[(i + 1) % n] <= X[i % n]);
                 s2 = s1 * (2 * s2 - 1);
             }
             if (dx > 0)
                 a2 = -dy, b2 = dx;
             else
                 a2 = dy, b2 = -dx;
-            c2 = -(a2 * X[i] + b2 * Y[i]);
+            c2 = -(a2 * X[i % n] + b2 * Y[i % n]);
             M2 = sqrt(a2 * a2 + b2 * b2);
         }
-        if (i == 0 || i == n - 1 || fabs(a1 * b2 - a2 * b1) < ERR) {
-            a1 = b2, b1 = -a2, c1 = -(a1 * X[i] + b1 * Y[i]);
+        // we don't want to draw the end points normally for closed
+        if ((!closed && (i == 0 || i == n - 1)) || fabs(a1 * b2 - a2 * b1) < ERR) {
+            // solving the perpendicular and two parralel st lines with distance d/2 from the original
+            a1 = b2, b1 = -a2, c1 = -(a1 * X[i % n] + b1 * Y[i % n]);
             p1 = solve_sim_eqn(a1, b1, c1, a2, b2, c2 + s2 * d * M2 / 2),
             p2 = solve_sim_eqn(a1, b1, c1, a2, b2, c2 - s2 * d * M2 / 2);
         }
-        else {
+        // we want to draw for i == n - 1 normally for closed, but not i == 0
+        else if (i != 0) {
+            // solving two consecutive parallel d distanced st lines
             p1 = solve_sim_eqn(a1, b1, c1 + s1 * d * M1 / 2, a2, b2, c2 + s2 * d * M2 / 2),
             p2 = solve_sim_eqn(a1, b1, c1 - s1 * d * M1 / 2, a2, b2, c2 - s2 * d * M2 / 2);
         }
+        // keeping last two points
         pX[2] = p1.x, pY[2] = p1.y;
         pX[3] = p2.x, pY[3] = p2.y;
-        if (i != 0) iFilledPolygon(pX, pY, 4);
+        // nothing to draw when i == 0 and i == 1 if closed
+        if (i != 0 && !(closed && i == 1)) iFilledPolygon(pX, pY, 4);
         a1 = a2, b1 = b2, c1 = c2, M1 = M2, s1 = s2;
         pX[1] = pX[2], pY[1] = pY[2];
         pX[0] = pX[3], pY[0] = pY[3];
     }
+}
+
+void iRectangleEx(double x, double y, double dx, double dy, double d = 1)
+{
+    double X[] = {x, x + dx, x + dx, x}, Y[] = {y, y, y + dy, y + dy};
+    iPath(X, Y, 4, d, 1);
 }
 
 void iSetTransparency(int state) { transparent = (state == 0) ? 0 : 1; }
@@ -130,6 +145,14 @@ void iRandomColor(double S, double V, double rgb[])
     rgb[2] = (b + m) * 255;
 }
 
+void iPassiveMouseMove(int, int);
+
+void mousePassiveMoveHandlerFF(int mx, int my)
+{
+    iPassiveMouseMove(mx, iScreenHeight - my);
+    glFlush();
+}
+
 void iResize(int width, int height);
 
 void resizeFF(int width, int height)
@@ -138,10 +161,10 @@ void resizeFF(int width, int height)
     iScreenHeight = height;
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
+    iResize(width, height);
     glOrtho(0.0, iScreenWidth, 0.0, iScreenHeight, -1.0, 1.0);
     glViewport(0.0, 0.0, iScreenWidth, iScreenHeight);
     glutPostRedisplay();
-    iResize(width, height);
 }
 
 void iInitializeEx(int width = 500, int height = 500, const char* title = "iGraphics")
@@ -149,9 +172,11 @@ void iInitializeEx(int width = 500, int height = 500, const char* title = "iGrap
 
     iScreenHeight = height;
     iScreenWidth  = width;
-    int   n       = 1;
+#ifdef FREEGLUT
+    int   n = 1;
     char* p[1];
     glutInit(&n, p);
+#endif
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_ALPHA | GLUT_MULTISAMPLE);
 
     glutInitWindowSize(width, height);
@@ -172,6 +197,7 @@ void iInitializeEx(int width = 500, int height = 500, const char* title = "iGrap
     glutKeyboardFunc(keyboardHandler1FF); // normal
     glutSpecialFunc(keyboardHandler2FF);  // special keys
     glutMouseFunc(mouseHandlerFF);
+    glutPassiveMotionFunc(mousePassiveMoveHandlerFF);
     glutMotionFunc(mouseMoveHandlerFF);
     glutIdleFunc(animFF);
 
