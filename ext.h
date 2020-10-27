@@ -132,6 +132,18 @@ void iRandomColor(double S, double V, double rgb[])
 
 void iResize(int width, int height);
 
+void resizeFF(int width, int height)
+{
+    iScreenWidth  = width;
+    iScreenHeight = height;
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(0.0, iScreenWidth, 0.0, iScreenHeight, -1.0, 1.0);
+    glViewport(0.0, 0.0, iScreenWidth, iScreenHeight);
+    glutPostRedisplay();
+    iResize(width, height);
+}
+
 void iInitializeEx(int width = 500, int height = 500, const char* title = "iGraphics")
 {
 
@@ -156,7 +168,7 @@ void iInitializeEx(int width = 500, int height = 500, const char* title = "iGrap
     iClear();
 
     glutDisplayFunc(displayFF);
-    glutReshapeFunc(iResize);
+    glutReshapeFunc(resizeFF);
     glutKeyboardFunc(keyboardHandler1FF); // normal
     glutSpecialFunc(keyboardHandler2FF);  // special keys
     glutMouseFunc(mouseHandlerFF);
