@@ -41,16 +41,28 @@ int isLeft(double x1, double y1, double x2, double y2, double x3, double y3)
 {
     return ((x2 - x1) * (y3 - y1) - (x3 - x1) * (y2 - y1)) > 0 ? 1 : 0;
 }
-void iPath(double X[], double Y[], int n, double d = 1, int closed = 0, int dashed = 0)
+void iPath(double X[],
+           double Y[],
+           int    n,
+           double d       = 1,
+           int    closed  = 0,
+           int    dashed  = 0,
+           double dash    = 10,
+           double gap     = 5,
+           int    aligned = 1)
 {
+    //  p1 ------------------- p2
+    //     -------------------
+    //  p0 ------------------- p3
     double pX[4], pY[4];
-    double dy, dx, a1, b1, c1, a2, b2, c2, M1, M2;
-    int    s1, s2;
+    double dy, dx, a1, b1, c1, a2, b2, c2, M1, M2, S;
+    int    s1, s2, end = n + 2 * closed;
     point  p1, p2;
+    S = 0;
     // repeating first two points like points in the middle for closed
-    for (int i = 0; i < n + 2 * closed; i++) {
+    for (int i = 0; i < end; i++) {
         if (i == n - 1 && !closed) {
-            s2 = s2;
+            s2 = s1;
             a2 = a1, b2 = b1, c2 = c1;
         }
         else {
@@ -88,8 +100,80 @@ void iPath(double X[], double Y[], int n, double d = 1, int closed = 0, int dash
         pX[2] = p1.x, pY[2] = p1.y;
         pX[3] = p2.x, pY[3] = p2.y;
         // nothing to draw when i == 0 and i == 1 if closed
-        if (i != 0 && !(closed && i == 1)) iFilledPolygon(pX, pY, 4);
+        if (i != 0 && !(closed && i == 1)) {
+            if (dashed) {
+                dx        = X[i % n] - X[(i - 1) % n];
+                dy        = Y[i % n] - Y[(i - 1) % n];
+                double dS = sqrt(dx * dx + dy * dy);
+                double x, y;
+                double S1 = S, S2;
+                double tX[4], tY[4];
+                // taking the vector approach for points at perpendicular distance
+                struct point dr {
+                    .x = dy / dS * d / 2, .y = -dx / dS * d / 2
+                };
+                if (aligned) {
+                    double t, dt;
+                    int    m    = floor((dS - dash - gap) / (dash + gap));       // number of dashes in between
+                    double gap_ = gap + (dS - (m + 1) * (dash + gap)) / (m + 1); // leading and trailing space
+                    for (int j = -1; j <= m; j++) {
+                        if (j == -1)
+                            t = 0, dt = dash / 2;
+                        else if (j == m)
+                            t = dS - dash / 2, dt = dash / 2;
+                        else {
+                            t  = (dash / 2 + gap_ + j * (dash + gap_));
+                            dt = dash;
+                        }
+                        for (int k = 0; k < 2; k++) {
+                            x = (t + dt * k) / dS * dx + X[(i - 1) % n];
+                            y = (t + dt * k) / dS * dy + Y[(i - 1) % n];
+                            if ((j == -1 && !k) || (j == m && k)) {
+                                tX[1 + k] = pX[1 + k], tY[1 + k] = pY[1 + k];
+                                tX[3 * k] = pX[3 * k], tY[3 * k] = pY[3 * k];
+                            }
+                            else {
+                                tX[1 + k] = x + dr.x, tY[1 + k] = y + dr.y;
+                                tX[3 * k] = x - dr.x, tY[3 * k] = y - dr.y;
+                            }
+                        }
+                        iFilledPolygon(tX, tY, 4);
+                    }
+                }
+                else {
+                    while (S1 < dS) {
+                        S2 = S1 + dash;
+                        for (int j = 0; j < 2; j++) {
+                            if (j == 0 && S1 <= 0) {
+                                tX[1] = pX[1], tY[1] = pY[1];
+                                tX[0] = pX[0], tY[0] = pY[0];
+                            }
+                            else if (j == 1 && S2 >= dS) {
+                                tX[2] = pX[2], tY[2] = pY[2];
+                                tX[3] = pX[3], tY[3] = pY[3];
+                            }
+                            else {
+                                double t  = (j == 0 ? S1 : S2);
+                                x         = t / dS * dx + X[(i - 1) % n];
+                                y         = t / dS * dy + Y[(i - 1) % n];
+                                tX[1 + j] = x + dr.x, tY[1 + j] = y + dr.y;
+                                tX[3 * j] = x - dr.x, tY[3 * j] = y - dr.y;
+                            }
+                        }
+                        iFilledPolygon(tX, tY, 4);
+                        S1 += (dash + gap);
+                    }
+                    if (S2 <= dS)
+                        S = S1 - dS; // gap before first dash
+                    else
+                        S = S1 - dash - gap - dS; // unfinished dash
+                }
+            }
+            else
+                iFilledPolygon(pX, pY, 4);
+        }
         a1 = a2, b1 = b2, c1 = c2, M1 = M2, s1 = s2;
+        // shifting points left
         pX[1] = pX[2], pY[1] = pY[2];
         pX[0] = pX[3], pY[0] = pY[3];
     }
@@ -169,6 +253,7 @@ void iInitializeEx(int width = 500, int height = 500, const char* title = "iGrap
 
     iScreenHeight = height;
     iScreenWidth  = width;
+
 #ifdef FREEGLUT
     int   n = 1;
     char* p[1];
@@ -184,29 +269,21 @@ void iInitializeEx(int width = 500, int height = 500, const char* title = "iGrap
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glOrtho(0.0, width, 0.0, height, -1.0, 1.0);
-    // glOrtho(-100.0 , 100.0 , -100.0 , 100.0 , -1.0 , 1.0) ;
-    // SetTimer(0, 0, 10, timer_proc);
 
     iClear();
 
     glutDisplayFunc(displayFF);
-    glutReshapeFunc(resizeFF);
+    glutReshapeFunc(resizeFF);            // added resize callback
     glutKeyboardFunc(keyboardHandler1FF); // normal
     glutSpecialFunc(keyboardHandler2FF);  // special keys
     glutMouseFunc(mouseHandlerFF);
-    glutPassiveMotionFunc(mousePassiveMoveHandlerFF);
+    glutPassiveMotionFunc(mousePassiveMoveHandlerFF); // added passive mouse move callback
     glutMotionFunc(mouseMoveHandlerFF);
     glutIdleFunc(animFF);
-
-    //
-    // Setup Alpha channel testing.
-    // If alpha value is greater than 0, then those
-    // pixels will be rendered. Otherwise, they would not be rendered
-    //
     glAlphaFunc(GL_GREATER, 0.0f);
     glEnable(GL_ALPHA_TEST);
 
-    if (transparent) {
+    if (transparent) { // added blending mode
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
