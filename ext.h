@@ -41,7 +41,7 @@ int isLeft(double x1, double y1, double x2, double y2, double x3, double y3)
 {
     return ((x2 - x1) * (y3 - y1) - (x3 - x1) * (y2 - y1)) > 0 ? 1 : 0;
 }
-void iPath(double X[], double Y[], int n, double d = 1, int closed = 0)
+void iPath(double X[], double Y[], int n, double d = 1, int closed = 0, int dashed = 0)
 {
     double pX[4], pY[4];
     double dy, dx, a1, b1, c1, a2, b2, c2, M1, M2;
