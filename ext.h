@@ -119,12 +119,8 @@ double iRandom(double min, double max)
     int s = 1 << 15;
     return min + (max - min) / s * (rand() % s);
 }
-
-void iRandomColor(double S, double V, double rgb[])
+void iHSVtoRGB(double H, double S, double V, double rgb[])
 {
-    // convert to rgb from random hue HSV
-    int    d = 1 << 15;
-    double H = iRandom(0, 360);
     double C = S * V;
     double X = C * (1 - abs(fmod(H / 60.0, 2) - 1));
     double m = V - C;
@@ -144,6 +140,7 @@ void iRandomColor(double S, double V, double rgb[])
     rgb[1] = (g + m) * 255;
     rgb[2] = (b + m) * 255;
 }
+void iRandomColor(double S, double V, double rgb[]) { iHSVtoRGB(iRandom(0, 360), S, V, rgb); }
 
 void iPassiveMouseMove(int, int);
 
