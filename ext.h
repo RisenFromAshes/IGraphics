@@ -49,7 +49,7 @@ void iPath(double X[],
            int    dashed  = 0,
            double dash    = 10,
            double gap     = 5,
-           int    aligned = 1)
+           int    aligned = 0)
 {
     //  p1 ------------------- p2
     //     -------------------
