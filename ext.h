@@ -185,6 +185,13 @@ void iRectangleEx(double x, double y, double dx, double dy, double d = 1)
     iPath(X, Y, 4, d, 1);
 }
 
+void iLineEx(
+    double x1, double y1, double dx, double dy, double d = 1, double dashed = 0, double dash = 10, double gap = 5)
+{
+    double X[] = {x1, x1 + dx}, Y[] = {y1, y1 + dy};
+    iPath(X, Y, 2, d, 0, dashed, dash, gap);
+}
+
 void iSetTransparency(int state) { transparent = (state == 0) ? 0 : 1; }
 
 double iGetTime()
