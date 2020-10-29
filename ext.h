@@ -179,14 +179,24 @@ void iPath(double X[],
     }
 }
 
-void iRectangleEx(double x, double y, double dx, double dy, double d = 1)
+void iRectangleEx(
+    double x, double y, double dx, double dy, double d = 1, int dashed = 0, double dash = 10, double gap = 5)
 {
     double X[] = {x, x + dx, x + dx, x}, Y[] = {y, y, y + dy, y + dy};
-    iPath(X, Y, 4, d, 1);
+    iPath(X, Y, 4, d, 1, dashed, dash, gap, 1);
 }
 
-void iLineEx(
-    double x1, double y1, double dx, double dy, double d = 1, double dashed = 0, double dash = 10, double gap = 5)
+void iCircleEx(
+    double x, double y, double r, double d = 1, int dashed = 0, int slices = 100, double dash = 10, double gap = 5)
+{
+    double* X = (double*)malloc(sizeof(double) * slices);
+    double* Y = (double*)malloc(sizeof(double) * slices);
+    for (int t = 0; t < 2 * PI; t += 2 * PI / slices)
+        X[t] = x + r * cos(t), Y[t] = y + r * sin(t);
+    iPath(X, Y, slices, d, 1, dashed, dash, gap);
+}
+
+void iLineEx(double x1, double y1, double dx, double dy, double d = 1, int dashed = 0, double dash = 10, double gap = 5)
 {
     double X[] = {x1, x1 + dx}, Y[] = {y1, y1 + dy};
     iPath(X, Y, 2, d, 0, dashed, dash, gap);
@@ -213,7 +223,7 @@ double iRandom(double min, double max)
 void iHSVtoRGB(double H, double S, double V, double rgb[])
 {
     double C = S * V;
-    double X = C * (1 - abs(fmod(H / 60.0, 2) - 1));
+    double X = C * (1 - fabs(fmod(H / 60.0, 2) - 1));
     double m = V - C;
     double r, g, b;
     if (H >= 0 && H < 60) { r = C, g = X, b = 0; }
@@ -230,6 +240,28 @@ void iHSVtoRGB(double H, double S, double V, double rgb[])
     rgb[0] = (r + m) * 255;
     rgb[1] = (g + m) * 255;
     rgb[2] = (b + m) * 255;
+}
+void iRGBtoHSV(double R, double G, double B, double hsv[])
+{
+    double r    = R / 255;
+    double g    = G / 255;
+    double b    = B / 255;
+    double Cmax = max(r, max(g, b));
+    double Cmin = min(r, min(g, b));
+    double del  = Cmax - Cmin;
+    double h, s, v;
+    if (del == 0)
+        h = 0;
+    else if (Cmax == r) {
+        h = 60 * fmod(6.0 + (g - b) / del, 6);
+    }
+    else if (Cmax == g)
+        h = 60 * ((b - r) / del + 2);
+    else if (Cmax == b)
+        h = 60 * ((r - g) / del + 4);
+    s      = Cmax == 0 ? 0 : del / Cmax;
+    v      = Cmax;
+    hsv[0] = h, hsv[1] = s, hsv[2] = v;
 }
 void iRandomColor(double S, double V, double rgb[]) { iHSVtoRGB(iRandom(0, 360), S, V, rgb); }
 
