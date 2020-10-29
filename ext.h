@@ -191,8 +191,10 @@ void iCircleEx(
 {
     double* X = (double*)malloc(sizeof(double) * slices);
     double* Y = (double*)malloc(sizeof(double) * slices);
-    for (int t = 0; t < 2 * PI; t += 2 * PI / slices)
-        X[t] = x + r * cos(t), Y[t] = y + r * sin(t);
+    double  t, dt = 2 * PI / slices;
+    int     i;
+    for (t = i = 0; t < 2 * PI; t += dt, i++)
+        X[i] = x + r * cos(t), Y[i] = y + r * sin(t);
     iPath(X, Y, slices, d, 1, dashed, dash, gap);
 }
 
