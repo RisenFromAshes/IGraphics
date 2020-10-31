@@ -3,28 +3,13 @@
     "tasks": [
         {
             "type": "shell",
-            "command": "g++",
+            "command": "bash",
             "args": [
-                "-IOpenGL/include",
-                "-LOpenGL/dll",
-                "\"${file}\"",
-                "-o",
-                "\"${workspaceFolder}/bin/${fileBasenameNoExtension}.exe\"",
-                "-static-libgcc",
-                "-static-libstdc++",
-                "-lfreeglut",
-                "-lOPENGL32",
-                "-lgdi32",
-                "&&",
-                "cp",
-                "\"${workspaceFolder}/OpenGL/dll/libfreeglut.dll\"",
-                "\"${workspaceFolder}/bin/\"",
-                "&&",
-                "cp",
-                "\"${workspaceFolder}/OpenGL/dll/libwinpthread-1.dll\"",
-                "\"${workspaceFolder}/bin/\"",
-                "&&",
-                "\"${workspaceFolder}/bin/${fileBasenameNoExtension}.exe\""
+                "./build_debug.sh",
+                "\"${workspaceFolder}\"",
+                "\"${relativeFileDirname}\"",
+                "\"${relativeFile}\"",
+                "${fileBasenameNoExtension}"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
@@ -40,35 +25,13 @@
         },
         {
             "type": "shell",
-            "command": "g++",
+            "command": "bash",
             "args": [
-                "-IOpenGL/include",
-                "-LOpenGL/dll",
-                "\"${file}\"",
-                "-o",
-                "\"${workspaceFolder}/bin/${fileBasenameNoExtension}.exe\"",
-                "-mwindows",
-                "-O3",
-                "-static-libgcc",
-                "-static-libstdc++",
-                "-lfreeglut",
-                "-lOPENGL32",
-                "-lgdi32",
-                "&&",
-                "cp",
-                "\"${workspaceFolder}/OpenGL/dll/libfreeglut.dll\"",
-                "\"${workspaceFolder}/bin/\"",
-                "&&",
-                "cp",
-                "\"${workspaceFolder}/OpenGL/dll/libwinpthread-1.dll\"",
-                "\"${workspaceFolder}/bin/\"",
-                "&&",
-                "cd", "bin",
-                "&&",
-                "7z", "a", "-tzip", 
-                "${fileBasenameNoExtension}.zip", "${fileBasenameNoExtension}.exe","libfreeglut.dll", "libwinpthread-1.dll",
-                "&&",
-                "mv", "${fileBasenameNoExtension}.zip", "../release/"
+                "./build_release.sh",
+                "\"${workspaceFolder}\"",
+                "\"${relativeFileDirname}\"",
+                "\"${relativeFile}\"",
+                "${fileBasenameNoExtension}"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
