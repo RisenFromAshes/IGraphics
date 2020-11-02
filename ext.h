@@ -1,6 +1,10 @@
 #include "iGraphics.h"
 #include <chrono>
 
+#ifdef FREEGLUT
+#include "OpenGL/include/freeglut.h"
+#endif
+
 #ifndef PI
 #define PI 3.1415926535897932
 #endif
@@ -308,9 +312,14 @@ void iInitializeEx(int width = 500, int height = 500, const char* title = "iGrap
 #ifdef FREEGLUT
     int   n = 1;
     char* p[1];
+    p[0] = (char*)malloc(8);
     glutInit(&n, p);
+    glutSetOption(GLUT_MULTISAMPLE, 8);
 #endif
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_ALPHA | GLUT_MULTISAMPLE);
+#ifdef FREEGLUT
+    glEnable(GLUT_MULTISAMPLE);
+#endif
 
     glutInitWindowSize(width, height);
     glutInitWindowPosition(10, 10);
@@ -320,8 +329,6 @@ void iInitializeEx(int width = 500, int height = 500, const char* title = "iGrap
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glOrtho(0.0, width, 0.0, height, -1.0, 1.0);
-
-    iClear();
 
     glutDisplayFunc(displayFF);
     glutReshapeFunc(resizeFF);            // added resize callback
@@ -338,6 +345,14 @@ void iInitializeEx(int width = 500, int height = 500, const char* title = "iGrap
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
+    glEnable(GL_POINT_SMOOTH);
+    glHint(GL_POINT_SMOOTH_HINT, GL_LINEAR);
+
+    glEnable(GL_LINE_SMOOTH);
+    glHint(GL_LINE_SMOOTH_HINT, GL_LINEAR);
+
+    glEnable(GL_POLYGON_SMOOTH);
+    glHint(GL_POLYGON_SMOOTH_HINT, GL_LINEAR);
 
     glutMainLoop();
 }

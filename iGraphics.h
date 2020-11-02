@@ -32,6 +32,8 @@ void iSpecialKeyboard(unsigned char);
 void iMouseMove(int, int);
 void iMouse(int button, int state, int x, int y);
 
+#ifdef WIN32
+
 static void __stdcall iA0(HWND, unsigned int, unsigned long long, unsigned long)
 {
     if (!iAnimPause[0]) iAnimFunction[0]();
@@ -111,6 +113,7 @@ void iResumeTimer(int index)
 {
     if (index >= 0 && index < iAnimCount) { iAnimPause[index] = 0; }
 }
+#endif
 
 //
 // Puts a BMP image on screen
