@@ -153,7 +153,7 @@ void iGetPixelColor(int cursorX, int cursorY, int rgb[])
     // printf("%d %d %d\n",pixel[0],pixel[1],pixel[2]);
 }
 
-void iText(double x, double y, const char* str, void* font = GLUT_BITMAP_8_BY_13)
+void iText(double x, double y, char str[], void* font = GLUT_BITMAP_8_BY_13)
 {
     glRasterPos3d(x, y, 0);
     int i;

@@ -41,6 +41,16 @@ int isLeft(double x1, double y1, double x2, double y2, double x3, double y3)
 {
     return ((x2 - x1) * (y3 - y1) - (x3 - x1) * (y2 - y1)) > 0 ? 1 : 0;
 }
+// to prevent const to non-const str conversion warning
+void iText(double x, double y, const char* str, void* font = GLUT_BITMAP_8_BY_13)
+{
+    glRasterPos3d(x, y, 0);
+    int i;
+    for (i = 0; str[i]; i++) {
+        glutBitmapCharacter(font, str[i]); //,GLUT_BITMAP_8_BY_13, GLUT_BITMAP_TIMES_ROMAN_24
+    }
+}
+
 void iPath(double X[],
            double Y[],
            int    n,
