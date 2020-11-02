@@ -22,6 +22,12 @@ else
     do
         cp $file ./bin
     done
+    cd $2
+    if [[ -f $4_pb.sh ]]
+        then
+        ./$4_pb.sh
+    fi
+    cd $1
     cd bin
     7z a -tzip $4_win_x64.zip $4 ./*.dll
     mv $4_win_x64.zip ../release
