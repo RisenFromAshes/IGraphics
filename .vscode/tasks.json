@@ -40,7 +40,10 @@
                 "$gcc"
             ],
             "label": "C++: iGraphics Release",
-            "group": "build"
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
         }
     ]
 }
