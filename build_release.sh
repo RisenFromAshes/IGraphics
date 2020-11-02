@@ -29,6 +29,6 @@ else
     fi
     cd $1
     cd bin
-    7z a -tzip $4_win_x64.zip $4 ./*.dll
+    7z a -tzip $4_win_x64.zip $4.exe ./*.dll
     mv $4_win_x64.zip ../release
 fi
