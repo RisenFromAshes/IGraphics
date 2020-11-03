@@ -34,43 +34,49 @@ void iMouse(int button, int state, int x, int y);
 
 #ifdef WIN32
 
-static void __stdcall iA0(HWND, unsigned int, unsigned long long, unsigned long)
+#ifdef __x86_64
+#define IMSEC unsigned long long
+#else
+#define IMSEC unsigned int
+#endif
+
+static void __stdcall iA0(HWND, unsigned int, IMSEC, unsigned long)
 {
     if (!iAnimPause[0]) iAnimFunction[0]();
 }
-static void __stdcall iA1(HWND, unsigned int, unsigned long long, unsigned long)
+static void __stdcall iA1(HWND, unsigned int, IMSEC, unsigned long)
 {
     if (!iAnimPause[1]) iAnimFunction[1]();
 }
-static void __stdcall iA2(HWND, unsigned int, unsigned long long, unsigned long)
+static void __stdcall iA2(HWND, unsigned int, IMSEC, unsigned long)
 {
     if (!iAnimPause[2]) iAnimFunction[2]();
 }
-static void __stdcall iA3(HWND, unsigned int, unsigned long long, unsigned long)
+static void __stdcall iA3(HWND, unsigned int, IMSEC, unsigned long)
 {
     if (!iAnimPause[3]) iAnimFunction[3]();
 }
-static void __stdcall iA4(HWND, unsigned int, unsigned long long, unsigned long)
+static void __stdcall iA4(HWND, unsigned int, IMSEC, unsigned long)
 {
     if (!iAnimPause[4]) iAnimFunction[4]();
 }
-static void __stdcall iA5(HWND, unsigned int, unsigned long long, unsigned long)
+static void __stdcall iA5(HWND, unsigned int, IMSEC, unsigned long)
 {
     if (!iAnimPause[5]) iAnimFunction[5]();
 }
-static void __stdcall iA6(HWND, unsigned int, unsigned long long, unsigned long)
+static void __stdcall iA6(HWND, unsigned int, IMSEC, unsigned long)
 {
     if (!iAnimPause[6]) iAnimFunction[6]();
 }
-static void __stdcall iA7(HWND, unsigned int, unsigned long long, unsigned long)
+static void __stdcall iA7(HWND, unsigned int, IMSEC, unsigned long)
 {
     if (!iAnimPause[7]) iAnimFunction[7]();
 }
-static void __stdcall iA8(HWND, unsigned int, unsigned long long, unsigned long)
+static void __stdcall iA8(HWND, unsigned int, IMSEC, unsigned long)
 {
     if (!iAnimPause[8]) iAnimFunction[8]();
 }
-static void __stdcall iA9(HWND, unsigned int, unsigned long long, unsigned long)
+static void __stdcall iA9(HWND, unsigned int, IMSEC, unsigned long)
 {
     if (!iAnimPause[9]) iAnimFunction[9]();
 }

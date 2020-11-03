@@ -31,7 +31,8 @@
                 "\"${workspaceFolder}\"",
                 "\"${relativeFileDirname}\"",
                 "\"${relativeFile}\"",
-                "${fileBasenameNoExtension}"
+                "${fileBasenameNoExtension}",
+                "x64"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
@@ -39,11 +40,30 @@
             "problemMatcher": [
                 "$gcc"
             ],
-            "label": "C++: iGraphics Release",
+            "label": "C++: iGraphics Release x64",
             "group": {
                 "kind": "build",
                 "isDefault": true
             }
+        },
+        {
+            "type": "shell",
+            "command": "bash",
+            "args": [
+                "./build_release.sh",
+                "\"${workspaceFolder}\"",
+                "\"${relativeFileDirname}\"",
+                "\"${relativeFile}\"",
+                "${fileBasenameNoExtension}",
+                "x86"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "label": "C++: iGraphics Release x86"
         }
     ]
 }
